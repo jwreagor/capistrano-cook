@@ -43,4 +43,29 @@ class Capistrano::DSL::ChefTest < Minitest::Test
     end
   end
 
+  def test_chef_env
+    env = "box_spring"
+    hostname = "197.3.2.1"
+
+    stub_node :test_node_3 do |node|
+      node.chef_environment = env
+      node.normal.ipaddress = hostname
+    end
+
+    stub_node :test_node_4 do |node|
+      node.chef_environment = "bumville"
+      node.normal.ipaddress = "84.9.1.11"
+    end
+
+    assert servers.to_a.size.zero?, "Should be no servers"
+
+    chef_role :rubix, "name:test_node_3"
+
+    assert_equal 1, servers.to_a.size
+
+    servers_with_role :rubix do |server|
+      assert_equal hostname, server.hostname
+    end
+  end
+
 end

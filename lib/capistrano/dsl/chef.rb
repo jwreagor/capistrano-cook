@@ -7,6 +7,16 @@ module Capistrano
       #
       def self.included(klass)
         klass.send :attr_writer, :chef_query_class
+        klass.send :attr_reader, :chef_env
+      end
+
+      #
+      # Set a default Chef environment name for our #chef_search calls.
+      #
+      # @param name [Symbol, String] name of the Chef environment to search
+      #
+      def chef_env(name)
+        @chef_env = "chef_environment:#{name}"
       end
 
       #
@@ -23,7 +33,7 @@ module Capistrano
         attribute = options.delete(:attribute) || :ipaddress
         results_proc = block_given? ? block : results_by(attribute)
         user  = fetch(:user)
-        hosts = chef_search(query).flat_map(&results_proc)
+        hosts = chef_search(:node, query).flat_map(&results_proc)
 
         Array(name).flat_map do |name|
           hosts.map do |host|
@@ -37,11 +47,13 @@ module Capistrano
       #
       # Query a Chef Server to search for specific nodes
       #
-      # @param [String] query string
+      # @param type [Symbol] type of chef objects to query
+      # @param query [String] query string
       # @return [Array<Chef::Node>] list of node results found
       #
-      def chef_search(query)
-        chef_query_class.new.search(:node, query).first
+      def chef_search(type, query=nil)
+        queries = [chef_env, query].compact.join("AND")
+        chef_query_class.new.search(type, queries).first
       end
 
       private
