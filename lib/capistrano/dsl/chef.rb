@@ -1,13 +1,18 @@
+require 'chef/search/query'
+require 'capistrano/chef/helpers'
+
 module Capistrano
   module DSL
     module Chef
+      include Capistrano::Chef::Helpers
+
       #
       # When module is included, provide a way to override the Chef query class
       # dependency.
       #
       def self.included(klass)
         klass.send :attr_writer, :chef_query_class
-        klass.send :attr_reader, :chef_env
+        set :scopes, []
       end
 
       #
@@ -15,8 +20,16 @@ module Capistrano
       #
       # @param name [Symbol, String] name of the Chef environment to search
       #
-      def chef_env(name)
-        @chef_env = "chef_environment:#{name}"
+      def chef_env(env=nil)
+        chef_scope :chef_environment, env
+      end
+
+      def chef_scope(name, scope)
+        if fetch(:scopes).empty?
+          push :scopes, [name, scope].join(":")
+        else
+          fetch(:scopes)[name]
+        end
       end
 
       #
@@ -29,18 +42,17 @@ module Capistrano
       # @param block [Proc] block used to filter search result nodes
       # @return [Array<Hash>] map of hashes of user and host pairs by role name
       #
-      def chef_role(name, query='*:*', options={}, &block)
+      def chef_role(names, query=nil, options={}, &block)
+        user = options[:user] ||= fetch(:user)
         attribute = options.delete(:attribute) || :ipaddress
+        index = options.delete(:index) || :node
         results_proc = block_given? ? block : results_by(attribute)
-        user  = fetch(:user)
-        hosts = chef_search(:node, query).flat_map(&results_proc)
+        terms = [index, query].compact
+        addresses = chef_search(*terms).flat_map(&results_proc)
 
-        Array(name).flat_map do |name|
-          hosts.map do |host|
-            user = [user, host].compact.join("@")
-            role name, user, options
-            next({ name => [user, host] })
-          end
+        Array(names).flat_map do |name|
+          role name, addresses, options
+          next({ name => [addresses, options] })
         end
       end
 
@@ -51,9 +63,12 @@ module Capistrano
       # @param query [String] query string
       # @return [Array<Chef::Node>] list of node results found
       #
-      def chef_search(type, query=nil)
-        queries = [chef_env, query].compact.join("AND")
-        chef_query_class.new.search(type, queries).first
+      def chef_search(type, query="*:*")
+        queries = [chef_env, query].compact.join(" AND ")
+        puts "Searching Chef types \"#{type}\" with \"#{queries}\"" if debug?
+        results = chef_query_class.new.search(type, queries).first
+        puts "Found #{results.count}" if debug?
+        results
       end
 
       private
