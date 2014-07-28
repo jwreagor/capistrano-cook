@@ -3,15 +3,15 @@ $:.push File.expand_path("../lib", __FILE__)
 require "capistrano/chef/version"
 
 Gem::Specification.new do |s|
-  s.name        = "capistrano-chef"
+  s.name        = "capistrano-cook"
   s.version     = Capistrano::Chef::VERSION
   s.platform    = Gem::Platform::RUBY
   s.license     = 'MIT'
-  s.authors     = ['Ryan Oblak', 'Justin Reagor']
-  s.email       = ['rroblak@gmail.com', 'cheapRoc@gmail.com']
-  s.homepage    = "https://github.com/gofullstack/capistrano-chef"
-  s.summary     = %q{Capistrano 3 extensions for working with Chef}
-  s.description = %q{Allows Capistrano and Chef to work together to script release tasks}
+  s.authors     = ['Justin Reagor']
+  s.email       = ['cheapRoc+gh@gmail.com']
+  s.homepage    = "https://github.com/cheapRoc/capistrano-cook"
+  s.summary     = %q{Capistrano 3 support for working with Chef, not replacing it}
+  s.description = %q{Provides easy support for using Capistrano and Chef together}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
