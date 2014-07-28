@@ -1,6 +1,6 @@
 # Chef For Capistrano 3
 
-[![Build Status](https://travis-ci.org/cheapRoc/capistrano-cook.svg?branch=master)](https://travis-ci.org/cheapRoc/capistrano-cook)
+[![Build Status](https://travis-ci.org/cheapRoc/capistrano-cook.svg?branch=master)](https://travis-ci.org/cheapRoc/capistrano-cook) [![Dependency Status](https://gemnasium.com/cheapRoc/capistrano-cook.svg)](https://gemnasium.com/cheapRoc/capistrano-cook)
 
 A common use-case for applications is to have [Chef](http://www.opscode.com/chef/) configure your systems and use [Capistrano](http://capistranorb.com/) to deploy the applications that run on them.
 
