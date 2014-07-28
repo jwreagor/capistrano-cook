@@ -1,5 +1,7 @@
 # Chef For Capistrano 3
 
+[![Build Status](https://travis-ci.org/cheapRoc/capistrano-cook.svg?branch=master)](https://travis-ci.org/cheapRoc/capistrano-cook)
+
 A common use-case for applications is to have [Chef](http://www.opscode.com/chef/) configure your systems and use [Capistrano](http://capistranorb.com/) to deploy the applications that run on them.
 
 Capistrano Chef is a Capistrano 3 extension that makes Chef and Capistrano 3 get along like best buds.
