@@ -13,22 +13,18 @@ module Capistrano
       def_delegators ::Capistrano::Configuration, :env, :reset!
 
       def setup
-        chef_server!
+        if server.running?
+          server.stop
+        end
+
+        server.start_background
         super
       end
 
       def teardown
         reset!
-        chef_server!
+        server.stop if server.running?
         super
-      end
-
-      def chef_server!
-        if server.running?
-          server.stop
-        else
-          server.start_background
-        end
       end
 
       def server

@@ -44,22 +44,55 @@ class Capistrano::DSL::ChefTest < Minitest::Test
   end
 
   def test_chef_env
-    env = "box_spring"
-    hostname = "197.3.2.1"
+    env = "bumville"
+    hostname = "84.9.1.11"
 
     stub_node :test_node_3 do |node|
+      node.chef_environment = "box_spring"
+      node.normal.ipaddress = "197.3.2.1"
+    end
+
+    stub_node :test_node_4 do |node|
       node.chef_environment = env
       node.normal.ipaddress = hostname
     end
 
-    stub_node :test_node_4 do |node|
+    assert servers.to_a.size.zero?, "Should be no servers"
+
+    chef_env env
+
+    assert_includes fetch(:chef_scopes), "chef_environment:#{env}"
+
+    chef_role :rubix, "name:test_node_*"
+
+    assert_equal 1, servers.to_a.size
+
+    servers_with_role :rubix do |server|
+      assert_equal hostname, server.hostname
+    end
+  end
+
+  def test_chef_scope
+    env = "livefree"
+    hostname = "197.3.2.1"
+
+    stub_node :test_node_6 do |node|
+      node.chef_environment = env
+      node.normal.ipaddress = hostname
+    end
+
+    stub_node :test_node_5 do |node|
       node.chef_environment = "bumville"
       node.normal.ipaddress = "84.9.1.11"
     end
 
     assert servers.to_a.size.zero?, "Should be no servers"
 
-    chef_role :rubix, "name:test_node_3"
+    chef_scope :chef_environment, env
+
+    assert_includes fetch(:chef_scopes), "chef_environment:#{env}"
+
+    chef_role :rubix, "name:test_node_*"
 
     assert_equal 1, servers.to_a.size
 

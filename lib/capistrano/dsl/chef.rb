@@ -12,7 +12,6 @@ module Capistrano
       #
       def self.included(klass)
         klass.send :attr_writer, :chef_query_class
-        set :scopes, []
       end
 
       #
@@ -25,10 +24,11 @@ module Capistrano
       end
 
       def chef_scope(name, scope)
-        if fetch(:scopes).empty?
-          push :scopes, [name, scope].join(":")
+        if scope
+          scopes = fetch(:chef_scopes) || []
+          set :chef_scopes, scopes << [name, scope].join(":")
         else
-          fetch(:scopes)[name]
+          fetch(:chef_scopes)
         end
       end
 
