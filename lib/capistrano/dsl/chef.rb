@@ -19,17 +19,13 @@ module Capistrano
       #
       # @param name [Symbol, String] name of the Chef environment to search
       #
-      def chef_env(env=nil)
+      def chef_env(env)
         chef_scope :chef_environment, env
       end
 
-      def chef_scope(name, scope)
-        if scope
-          scopes = fetch(:chef_scopes) || []
-          set :chef_scopes, scopes << [name, scope].join(":")
-        else
-          fetch(:chef_scopes)
-        end
+      def chef_scope(name, scope=nil)
+        scopes = fetch(:chef_scopes) || []
+        set :chef_scopes, scopes << [name, scope].join(":")
       end
 
       #
@@ -64,7 +60,8 @@ module Capistrano
       # @return [Array<Chef::Node>] list of node results found
       #
       def chef_search(type, query="*:*")
-        queries = [chef_env, query].compact.join(" AND ")
+        chef_scopes = fetch(:chef_scopes) || []
+        queries = [chef_scopes, query].flatten.join(" AND ")
         puts "Searching Chef types \"#{type}\" with \"#{queries}\"" if debug?
         results = chef_query_class.new.search(type, queries).first
         puts "Found #{results.count}" if debug?
