@@ -1,6 +1,6 @@
 # capistrano-cook
 
-[![Build Status](https://travis-ci.org/cheapRoc/capistrano-cook.svg?branch=master)](https://travis-ci.org/cheapRoc/capistrano-cook) [![Dependency Status](https://gemnasium.com/cheapRoc/capistrano-cook.svg)](https://gemnasium.com/cheapRoc/capistrano-cook)
+[![Build Status](https://travis-ci.org/cheapRoc/capistrano-cook.svg?branch=master)](https://travis-ci.org/cheapRoc/capistrano-cook) [![Dependency Status](https://gemnasium.com/cheapRoc/capistrano-cook.svg)](https://gemnasium.com/cheapRoc/capistrano-cook) [![Gem Version](https://badge.fury.io/rb/capistrano-cook.svg)](http://badge.fury.io/rb/capistrano-cook)
 
 _capistrano-cook_ is a fork of [Capistrano::Chef][fork].
 
