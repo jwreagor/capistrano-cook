@@ -7,9 +7,6 @@ _capistrano-cook_ is a fork of [Capistrano::Chef][fork].
 The goal of _capistrano-cook_ is to provide a set of tools you may or may not
 need when you'd like to use [Capistrano][cap] and [Chef][chef] together.
 
-Otherwise, don't use this gem and just conform to Chef or Docker, or anything
-else that will make you look cool.
-
 **Note**: capistrano-cook will not support older versions of Capistrano prior to
 version 3.
 
@@ -20,6 +17,23 @@ version 3.
     $ echo "require 'capistrano/chef'" >> Capfile
 
 It doesn't matter if you require `"capistrano/chef"` or `"capistrano/cook"`.
+
+## Knife Configuration
+
+A Chef Server configuration is expected to be available as [Knife][knife] is
+used to configure this library. You must have a `.chef` directory including a
+configured `knife.rb` in either the current directory or one it's parents. After
+running `bundle install` check to see if you can use the `knife` command
+properly.
+
+If you're using [Hosted Chef][hosted] these configuration files will be provided
+to you.
+
+If not, the configuration can be generated with `knife configure -i`.
+
+See the [Chef Documentation][config] for more details.
+
+**TIP**: Symlink it in from another project.
 
 ## Roles
 
@@ -100,68 +114,21 @@ following performs the same as the above `chef_scope` call.
 
     chef_env "myface_production"
 
-## Knife Configuration
+## Contributing
 
-A Chef Server configuration is expected to be available as [Knife][knife] is
-used to configure this library. You must have a `.chef` directory including a
-configured `knife.rb` in either the current directory or one it's parents. After
-running `bundle install` check to see if you can use the `knife` command
-properly.
-
-If you're using [Hosted Chef][hosted] these configuration files will be provided
-to you.
-
-If not, the configuration can be generated with `knife configure -i`.
-
-See the [Chef Documentation][config] for more details.
+* Fork the project.
+* Make your feature addition or bug fix in a topic branch.
+* Add tests for it. This is important so I don't break it in a future version
+  unintentionally.
+* Commit, do not mess with Rakefile or version (if you want to have your own
+  version, that is fine but bump version in a commit by itself I can ignore when
+  I pull)
+* Update (rebase) your commits with my master.
+* Send me a pull request.
 
 ## License
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## Following Dogma
-
-I hope this project never appears to promote the use of Capistrano with Chef
-over any other deployment solution which you may find more useful. Solutions
-that include, but are not limited to...
-
-- Capistrano [by itself]
-- Chef [by itself]
-- Docker
-- Omnibus
-- shell scripts
-- batch files
-- DEB packages
-- RPM packages
-- ZIP files
-- Tarballs
-- Omnibus
-- Makefiles
-- uploading to S3
-- downloading from S3
-- mailing a CDROM
-- selling a CDROM
-- App Store
-- Play Store
-- Amazon
-- Steam
-
-This project is to help people use Capistrano and Chef together. kthnx.
+See [LICENSE](license).
 
 [chef]: http://www.getchef.com/
 [cap]: http://capistranorb.com/
@@ -171,3 +138,4 @@ This project is to help people use Capistrano and Chef together. kthnx.
 [knife]: http://wiki.opscode.com/display/chef/Knife
 [config]: http://wiki.opscode.com/display/chef/Chef+Repository#ChefRepository-Configuration
 [hosted]: http://www.opscode.com/hosted-chef/
+[license]: http://github.com/cheapRoc/capistrano-cook/blob/master/LICENSE
