@@ -46,9 +46,8 @@ module Capistrano
         terms = [index, query].compact
         addresses = chef_search(*terms).flat_map(&results_proc)
 
-        Array(names).flat_map do |name|
-          role name, addresses, options
-          next({ name => [addresses, options] })
+        addresses.each do |address|
+          server address, options.merge(roles: names)
         end
       end
 

@@ -13,21 +13,21 @@ module Capistrano
       def_delegators ::Capistrano::Configuration, :env, :reset!
 
       def setup
-        if server.running?
-          server.stop
+        if chef_server.running?
+          chef_server.stop
         end
 
-        server.start_background
+        chef_server.start_background
         super
       end
 
       def teardown
         reset!
-        server.stop if server.running?
+        chef_server.stop if chef_server.running?
         super
       end
 
-      def server
+      def chef_server
         @server ||= ::ChefZero::Server.new \
           port: 8889,
           debug: !!ENV['DEBUG'],
@@ -54,7 +54,7 @@ module Capistrano
         name = name.to_s || "test_node_#{nodes.keys.size}"
         nodes[name] = ::Chef::Node.build(name).tap(&block)
         data = ::JSON.fast_generate(nodes[name])
-        server.load_data({ "nodes" => { name => data }})
+        chef_server.load_data({ "nodes" => { name => data }})
         nodes[name]
       end
 
