@@ -4,6 +4,7 @@ require "chef_zero/server"
 
 module Capistrano
   module Chef
+    # @api private
     module TestHelpers
 
       include Capistrano::DSL::Chef
@@ -28,7 +29,7 @@ module Capistrano
       end
 
       def chef_server
-        @server ||= ::ChefZero::Server.new \
+        @chef_server ||= ::ChefZero::Server.new \
           port: 8889,
           debug: !!ENV['DEBUG'],
           single_org: false

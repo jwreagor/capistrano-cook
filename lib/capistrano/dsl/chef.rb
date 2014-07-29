@@ -3,29 +3,52 @@ require 'capistrano/chef/helpers'
 
 module Capistrano
   module DSL
+    # @api private
     module Chef
+      #
+      # @attr_writer chef_query_class [Chef::Search::Query, #new<#search>] the dependency class we query for Chef data
+      #
+      # @attr_writer chef_context [Capistrano::Configuration] the Capistrano.env object we configure
+      #
+      # @api public
+      #
+
+      #
+      # Includes some private library helpers
+      #
       include Capistrano::Chef::Helpers
 
       #
-      # When module is included, provide a way to override the Chef query class
-      # dependency.
+      # Provide a way to customize the interface methods our internals use at
+      # runtime.
       #
       def self.included(klass)
         klass.send :attr_writer, :chef_query_class
+        klass.send :attr_writer, :chef_context
       end
 
       #
       # Set a default Chef environment name for our #chef_search calls.
       #
-      # @param name [Symbol, String] name of the Chef environment to search
+      # @param env [Symbol, String] name of the Chef environment to search
+      #
+      # @api public
       #
       def chef_env(env)
         chef_scope :chef_environment, env
       end
 
-      def chef_scope(name, scope=nil)
+      #
+      # Set a term that is included for every #chef_search call.
+      #
+      # @param field [Symbol, String] field to search
+      # @param term [String] query term to search
+      #
+      # @api public
+      #
+      def chef_scope(field, term="*")
         scopes = fetch(:chef_scopes) || []
-        set :chef_scopes, scopes << [name, scope].join(":")
+        set :chef_scopes, scopes << [field, term].join(":")
       end
 
       #
@@ -38,11 +61,13 @@ module Capistrano
       # @param block [Proc] block used to filter search result nodes
       # @return [Array<Hash>] map of hashes of user and host pairs by role name
       #
+      # @api public
+      #
       def chef_role(names, query=nil, options={}, &block)
         user = options[:user] ||= fetch(:user)
         attribute = options.delete(:attribute) || :ipaddress
         index = options.delete(:index) || :node
-        results_proc = block_given? ? block : results_by(attribute)
+        results_proc = block_given? ? block : chef_results_by(attribute)
         terms = [index, query].compact
         addresses = chef_search(*terms).flat_map(&results_proc)
 
@@ -57,6 +82,8 @@ module Capistrano
       # @param type [Symbol] type of chef objects to query
       # @param query [String] query string
       # @return [Array<Chef::Node>] list of node results found
+      #
+      # @api public
       #
       def chef_search(type, query="*:*")
         chef_scopes = fetch(:chef_scopes) || []
@@ -77,9 +104,16 @@ module Capistrano
       end
 
       #
+      # Interface dependency of our Capistrano config context
+      #
+      def chef_context
+        @chef_context || ::Capistrano.env
+      end
+
+      #
       # Query a Chef Server to search for specific nodes
       #
-      def results_by(attribute)
+      def chef_results_by(attribute)
         case attribute
         when Symbol, String
           lambda { |node| node[attribute] }
