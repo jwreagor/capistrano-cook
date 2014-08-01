@@ -2,28 +2,28 @@
 $:.push File.expand_path("../lib", __FILE__)
 require "capistrano/chef/version"
 
-Gem::Specification.new do |s|
-  s.name        = "capistrano-cook"
-  s.version     = Capistrano::Chef::VERSION
-  s.platform    = Gem::Platform::RUBY
-  s.authors     = ['Justin Reagor']
-  s.email       = ['cheapRoc+gh@gmail.com']
-  s.homepage    = "https://github.com/cheapRoc/capistrano-cook"
-  s.summary     = %q{Capistrano 3 support for working with Chef, not replacing it}
-  s.description = %q{Provides easy support for using Capistrano and Chef together}
-  s.license     = 'MIT'
+Gem::Specification.new do |gem|
+  gem.name        = "capistrano-cook"
+  gem.version     = Capistrano::Chef::VERSION
+  gem.platform    = Gem::Platform::RUBY
+  gem.authors     = ['Justin Reagor']
+  gem.email       = ['cheapRoc@gmail.com']
+  gem.homepage    = "https://github.com/cheapRoc/capistrano-cook"
+  gem.summary     = %q{Capistrano 3 support for working with Chef, not replacing it}
+  gem.description = %q{Provides easy support for using Capistrano and Chef together}
+  gem.license     = 'MIT'
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  s.require_paths = ["lib"]
+  gem.files         = Dir[*%w(*.md *.gemspec LICENSE Gemfile bin/* lib/**/*.*)]
+  gem.test_files    = Dir[*%w(.chef/knife.rb .chef/stickywicket.pem test/**/*.*)]
+  gem.executables   = Dir["bin/*"].map { |f| File.basename(f) }
+  gem.require_paths = ["lib"]
 
-  s.add_dependency "capistrano", "~> 3.2.1"
-  s.add_dependency "chef",       "~> 11.12.8"
+  gem.add_dependency "capistrano", "~> 3.2.1"
+  gem.add_dependency "chef",       "~> 11.12.8"
 
-  s.add_development_dependency "bundler", "~> 1.6"
-  s.add_development_dependency "rake"
-  s.add_development_dependency "minitest"
-  s.add_development_dependency "chef-zero"
+  gem.add_development_dependency "bundler", "~> 1.6"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "minitest"
+  gem.add_development_dependency "chef-zero"
 end
 
