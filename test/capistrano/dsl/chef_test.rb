@@ -90,7 +90,8 @@ class Capistrano::DSL::ChefTest < Minitest::Test
 
     chef_scope :chef_environment, env
 
-    assert_includes fetch(:chef_scopes), "chef_environment:#{env}"
+    assert_equal fetch(:chef_scopes), ["chef_environment:#{env}"]
+    # assert_includes fetch(:chef_scopes), "chef_environment:#{env}"
 
     chef_role :rubix, "name:test_node_*"
 
@@ -99,6 +100,11 @@ class Capistrano::DSL::ChefTest < Minitest::Test
     servers_with_role :rubix do |server|
       assert_equal hostname, server.hostname
     end
+
+    env = "dietryin"
+    chef_scope :chef_environment, env
+
+    assert_equal fetch(:chef_scopes), ["chef_environment:#{env}"]
   end
 
 end
