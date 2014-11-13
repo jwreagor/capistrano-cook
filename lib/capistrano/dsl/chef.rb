@@ -48,7 +48,7 @@ module Capistrano
       #
       def chef_scope(field, term="*")
         scopes = fetch(:chef_scopes) || []
-        scopes.delete_if { |scope| scope =~ /chef_environment/ }
+$        scopes.delete_if { |scope| scope =~ /chef_environment/ }
         set :chef_scopes, scopes << [field, term].join(":")
       end
 
