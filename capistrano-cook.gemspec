@@ -24,6 +24,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "bundler", "~> 1.6"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "minitest"
-  gem.add_development_dependency "chef-zero"
+  gem.add_development_dependency "chef-zero", "~> 2.0.2"
 end
 
