@@ -50,31 +50,39 @@ Chef roles and their data from within Capistrano.
 
 A normal `deploy.rb` in an app using capistrano defines roles like this:
 
+```ruby
     role :web, '10.0.0.2', '10.0.0.3'
     role :db, '10.0.0.2', :primary => true
+```
 
 Using `capistrano-cook`, you can do this:
 
+```ruby
     require 'capistrano/chef'
 
     chef_role :web 'role:web'
     chef_role :db, 'role:database AND tag:master', primary: true,
                                                    attribute: :private_ip,
                                                    limit: 1
+```
 
 Use a Hash to get a specific network interface.
 
 The Hash must be in the form of `{ 'interface-name' => 'network-family-name' }`.
 
+```ruby
     chef_role :web, 'role:web', attribute: { eth1: :inet }
+```
 
 For a more deep and complex attribute search, call with a block.
 
+```ruby
     chef_role :web, 'roles:web' do |node|
       node["network"]["interfaces"]["eth1"]["addresses"].select do |address, data|
         data["family"] == "inet"
       end.keys.first
     end
+```
 
 This defines the same roles using [Chef's search feature][search]. Nodes are
 searched using the given query. The node's `ipaddress` attribute is used by
@@ -86,7 +94,9 @@ You can also define multiple roles at the same time if the host list is
 identical. Instead of running multiple searches to the Chef server, you can pass
 an Array to `chef_role`:
 
+```ruby
     chef_role [:web, :app], 'role:web'
+```
 
 ## Search
 
@@ -96,8 +106,10 @@ You can also perform generic searches against your Chef Server search indexes.
 
 Calling `chef_search` will result in an enumerable of Chef::Node objects.
 
+```ruby
     nodes = chef_search :node, "name:backup_database"
     nodes.each { |node| puts node.name }
+```
 
 You can also scope your search calls so that you don't need to constantly
 include the same search terms for each `chef_role` or `chef_search` call.
@@ -105,14 +117,18 @@ include the same search terms for each `chef_role` or `chef_search` call.
 This next example will return all nodes which are tagged with "migrations"
 within the "myface_production" Chef environment.
 
+```ruby
     chef_scope "chef_environment:myface_production"
 
     chef_search :node, "tag:migrations"
+```
 
 There is also a short hand version for defining your environment name. The
 following performs the same as the above `chef_scope` call.
 
+```ruby
     chef_env "myface_production"
+```
 
 ## Contributing
 
